@@ -1,8 +1,14 @@
 const express = require('express');
 const app = express();
+const path=require('path');
 const PORT = 3000;
+// Middlewares
+app.use(express.json());
+app.use(express.static(path.join(__dirname,'public')))
 
-app.use(express.json()); // Middleware to parse JSON bodies
+app.get('/',(req,res)=>{
+    res.sendFile(path.join(__dirname,'views','index.html'));
+});
 
 app.post('/user/signup', (req, res) => {
     const { name, email, password } = req.body;

@@ -1,24 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign-up</title>
-</head>
-<body>
-    <div class="container">
-        <form id="signupForm">
-            <label for="name">Name:</label><br>
-            <input type="text" id="name" name="name" required><br>
-            <label for="mail">Email:</label><br>
-            <input type="email" id="mail" name="email" required><br>
-            <label for="pwd">Password:</label><br>
-            <input type="password" id="pwd" name="password" required><br>
-            <button type="submit">Sign-up</button>
-        </form>
-    </div>
-    <script>
-        document.getElementById('signupForm').addEventListener('submit', async function(event) {
+const singUpSubmit=document.getElementById('signupForm');
+        singUpSubmit.addEventListener('submit', async function(event) {
             event.preventDefault(); // Prevent the default form submission
 
             // Get form data
@@ -46,6 +27,7 @@
                     const data = await response.json();
                     alert('Sign-up successful!');
                     console.log(data);
+                    singUpSubmit.reset();
                 } else {
                     const errorData = await response.json();
                     alert('Sign-up failed: ' + errorData.message);
@@ -56,6 +38,3 @@
                 alert('An error occurred. Please try again.');
             }
         });
-    </script>
-</body>
-</html>
