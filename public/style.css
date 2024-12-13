@@ -1,73 +1,59 @@
-/* General styles */
 body {
     font-family: Arial, sans-serif;
-    background-color: #f4f4f9;
     margin: 0;
     padding: 0;
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
+    background-color: #f5f5f5;
 }
 
-/* Container styling */
 .container {
-    background-color: #ffffff;
-    padding: 20px 30px;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    width: 100%;
-    max-width: 400px;
+    width: 300px;
+    padding: 20px;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
-.container h2{
+
+h2 {
     text-align: center;
+    margin-bottom: 20px;
 }
 
-/* Form label styling */
-form label {
-    font-size: 14px;
-    color: #333;
-    display: block;
-    margin-bottom: 5px;
+label {
+    font-weight: bold;
 }
 
-/* Input field styling */
-form input {
-    width: 90%;
+input {
+    width: 100%;
     padding: 10px;
-    margin-bottom: 15px;
+    margin: 10px 0;
     border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 14px;
+    border-radius: 5px;
 }
 
-/* Input field focus styling */
-form input:focus {
-    border-color: #007BFF;
-    outline: none;
-    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
-}
-
-/* Button styling */
-form button {
-    width: 90%;
+button {
+    width: 100%;
     padding: 10px;
-    background-color: #007BFF;
-    border: none;
-    border-radius: 4px;
+    background-color: #28a745;
     color: #fff;
-    font-size: 16px;
+    border: none;
+    border-radius: 5px;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    margin-top: 10px;
 }
 
-form button:hover {
-    background-color: rgba(71, 45, 223, 0.5);
+button:hover {
+    background-color: #218838;
 }
 
-/* Responsive adjustments */
-@media (max-width: 480px) {
-    .container {
-        padding: 15px 20px;
-    }
+#signupButton {
+    background-color: #007bff;
+    margin-top: 15px;
+}
+
+#signupButton:hover {
+    background-color: #0056b3;
 }

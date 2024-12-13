@@ -8,15 +8,16 @@ const app = express();
 
 // Middleware
 app.use(bodyParser.json());
-app.use(express.static(path.join(__dirname, 'public'))); // Serve static files
+app.use(express.static(path.join(__dirname, 'public')));
 
-// Serve index.html from the views folder
+// Serve the login page
 app.get('/', async (req, res) => {
-    try {
-        res.sendFile(path.join(__dirname, 'views', 'index.html'));
-    } catch (error) {
-        res.status(500).send('Error loading the page.');
-    }
+    res.sendFile(path.join(__dirname, 'views', 'login.html'));
+});
+
+// Serve the signup page
+app.get('/signup', async (req, res) => {
+    res.sendFile(path.join(__dirname, 'views', 'index.html'));
 });
 
 // Use user routes
@@ -27,14 +28,10 @@ sequelize
     .sync()
     .then(() => {
         console.log('Database synced successfully.');
-
-        const PORT = 3000;
-        app.listen(PORT, () => {
-            console.log(`Server running at http://localhost:${PORT}`);
+        app.listen(3000, () => {
+            console.log('Server running at http://localhost:3000');
         });
     })
     .catch((error) => {
         console.error('Error syncing database:', error);
     });
-
-module.exports = app;
