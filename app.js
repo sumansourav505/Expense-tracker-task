@@ -1,27 +1,40 @@
 const express = require('express');
+const bodyParser = require('body-parser');
+const path = require('path');
+const sequelize = require('./config/database');
+const userRoutes = require('./routes/user');
+
 const app = express();
-const path=require('path');
-const PORT = 3000;
-// Middlewares
-app.use(express.json());
-app.use(express.static(path.join(__dirname,'public')))
 
-app.get('/',(req,res)=>{
-    res.sendFile(path.join(__dirname,'views','index.html'));
-});
+// Middleware
+app.use(bodyParser.json());
+app.use(express.static(path.join(__dirname, 'public'))); // Serve static files
 
-app.post('/user/signup', (req, res) => {
-    const { name, email, password } = req.body;
-    console.log('User Data:', { name, email, password });
-    
-    // Add your logic to save user data or return an error
-    if (name && email && password) {
-        res.status(201).json({ message: 'User signed up successfully!' });
-    } else {
-        res.status(400).json({ message: 'Invalid user data.' });
+// Serve index.html from the views folder
+app.get('/', async (req, res) => {
+    try {
+        res.sendFile(path.join(__dirname, 'views', 'index.html'));
+    } catch (error) {
+        res.status(500).send('Error loading the page.');
     }
 });
 
-app.listen(PORT, () => {
-    console.log(`Server running at http://localhost:${PORT}`);
-});
+// Use user routes
+app.use('/user', userRoutes);
+
+// Sync database and start server
+sequelize
+    .sync()
+    .then(() => {
+        console.log('Database synced successfully.');
+
+        const PORT = 3000;
+        app.listen(PORT, () => {
+            console.log(`Server running at http://localhost:${PORT}`);
+        });
+    })
+    .catch((error) => {
+        console.error('Error syncing database:', error);
+    });
+
+module.exports = app;
