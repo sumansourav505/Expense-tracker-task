@@ -3,7 +3,7 @@ const User = require('../models/user');
 const router = express.Router();
 
 // Login route
-router.post('/', async (req, res) => {
+router.post('/login', async (req, res) => {
     const { email, password } = req.body;
 
     try {
@@ -15,6 +15,9 @@ router.post('/', async (req, res) => {
 
         if (user.password !== password) {
             return res.status(400).json({ message: 'Password is incorrect.' });
+        }
+        if (user.password !== password && user.email!==email) {
+            return res.status(400).json({ message: 'Email id & Password are incorrect.' });
         }
 
         res.status(200).json({ message: 'User login successful!' });

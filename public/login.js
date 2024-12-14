@@ -24,8 +24,12 @@ loginForm.addEventListener('submit', async function (event) {
         if (response.ok) {
             alert(result.message);
             loginForm.reset();
-        } else {
-            alert(result.message);
+        } else if(response.status===404) {
+            alert('error:' + result.message);
+        }else if(response.status===401){
+            alert('Error:'+ result.message);
+        }else{
+            alert('An unexpected error  occurred');
         }
     } catch (error) {
         console.error('Error:', error);
