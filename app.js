@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 const path = require('path');
 const sequelize = require('./config/database');
 const userRoutes = require('./routes/user');
+const expenseRoutes = require('./routes/expense');
 
 const app = express();
 
@@ -10,22 +11,37 @@ const app = express();
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Serve the login page
-app.get('/', async (req, res) => {
+// Serve pages
+app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'views', 'login.html'));
 });
 
-// Serve the signup page
-app.get('/signup', async (req, res) => {
-    res.sendFile(path.join(__dirname, 'views', 'index.html'));
+app.get('/signup', (req, res) => {
+    res.sendFile(path.join(__dirname, 'views', 'signUp.html'));
 });
 
-// Use user routes
+app.get('/expense', (req, res) => {
+    res.sendFile(path.join(__dirname, 'views', 'expense.html'));
+});
+
+// Use routes
 app.use('/user', userRoutes);
+app.use('/expense', expenseRoutes);
+
+// Error handling for undefined routes
+app.use((req, res) => {
+    res.status(404).json({ error: 'Route not found' });
+});
+
+// Global error handler
+app.use((err, req, res, next) => {
+    console.error('Unhandled Error:', err);
+    res.status(500).json({ error: 'Internal Server Error' });
+});
 
 // Sync database and start server
 sequelize
-    .sync()
+    .sync() // Avoid using { force: true } in production
     .then(() => {
         console.log('Database synced successfully.');
         app.listen(3000, () => {

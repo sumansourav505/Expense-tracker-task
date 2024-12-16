@@ -1,6 +1,7 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
 const User = require('../models/user');
+const Expense=require('../models/expense');
 const router = express.Router();
 
 // Set salt rounds
@@ -29,6 +30,8 @@ router.post('/signup', async (req, res) => {
         res.status(500).json({ message: 'An error occurred. Please try again later.' });
     }
 });
+
+
 
 // Login route
 router.post('/login', async (req, res) => {
