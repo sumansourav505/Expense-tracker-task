@@ -5,8 +5,13 @@ const signupButton = document.getElementById('signupButton');
 loginForm.addEventListener('submit', async function (event) {
     event.preventDefault();
 
-    const email = document.getElementById('mail').value;
-    const password = document.getElementById('pwd').value;
+    const email = document.getElementById('mail').value.trim();
+    const password = document.getElementById('pwd').value.trim();
+
+    if (!email || !password) {
+        alert('Please fill all the fields.');
+        return;
+    }
 
     const loginData = { email, password };
 
@@ -19,17 +24,13 @@ loginForm.addEventListener('submit', async function (event) {
             body: JSON.stringify(loginData),
         });
 
-        const result = await response.json();
+        const data = await response.json();
 
         if (response.ok) {
-            alert(result.message);
-            loginForm.reset();
-        } else if(response.status===404) {
-            alert('error:' + result.message);
-        }else if(response.status===401){
-            alert('Error:'+ result.message);
-        }else{
-            alert('An unexpected error  occurred');
+            alert('Login successful!');
+            window.location.href = '/expense';
+        } else {
+            alert(`Login failed: ${data.message}`);
         }
     } catch (error) {
         console.error('Error:', error);
@@ -37,7 +38,7 @@ loginForm.addEventListener('submit', async function (event) {
     }
 });
 
-// Redirect to the signup page
-signupButton.addEventListener('click', function () {
+// Redirect to signup page
+signupButton.addEventListener('click', () => {
     window.location.href = '/signup';
 });

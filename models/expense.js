@@ -1,7 +1,7 @@
 const {DataTypes}=require('sequelize');
 const sequelize=require('../config/database');
 
-const Expense=sequelize.define('expense',{
+const Expense=sequelize.define('expenses',{
     amount:{
         type:DataTypes.FLOAT,
         allowNull:false,
@@ -12,10 +12,6 @@ const Expense=sequelize.define('expense',{
     },
     category:{
         type:DataTypes.STRING,
-        allowNull:false,
-    },
-    userId:{
-        type:DataTypes.INTEGER,
         allowNull:false,
     }
 });

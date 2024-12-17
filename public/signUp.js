@@ -1,40 +1,39 @@
-const singUpSubmit=document.getElementById('signupForm');
-        singUpSubmit.addEventListener('submit', async function(event) {
-            event.preventDefault(); // Prevent the default form submission
+const signupForm = document.getElementById('signupForm');
 
-            // Get form data
-            const name = document.getElementById('name').value;
-            const email = document.getElementById('mail').value;
-            const password = document.getElementById('pwd').value;
+signupForm.addEventListener('submit', async function (event) {
+    event.preventDefault();
 
-            const userData = {
-                name: name,
-                email: email,
-                password: password
-            };
+    const name = document.getElementById('name').value.trim();
+    const email = document.getElementById('mail').value.trim();
+    const password = document.getElementById('pwd').value.trim();
 
-            try {
-                // Send POST request to the backend
-                const response = await fetch('http://localhost:3000/user/signup', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(userData)
-                });
+    if (!name || !email || !password) {
+        alert('Please fill all the fields.');
+        return;
+    }
 
-                if (response.ok) {
-                    const data = await response.json();
-                    alert('Sign-up successful!');
-                    console.log(data);
-                    singUpSubmit.reset();
-                } else {
-                    const errorData = await response.json();
-                    alert('Sign-up failed: ' + errorData.message);
-                    console.error(errorData);
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                alert('An error occurred. Please try again.');
-            }
+    const userData = { name, email, password };
+
+    try {
+        const response = await fetch('/user/signup', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(userData),
         });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            alert('Sign-up successful!');
+            signupForm.reset();
+            window.location.href = '/';
+        } else {
+            alert(`Sign-up failed: ${data.message}`);
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('An error occurred. Please try again.');
+    }
+});
