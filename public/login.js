@@ -14,27 +14,33 @@ loginForm.addEventListener('submit', async function (event) {
     }
 
     const loginData = { email, password };
+    const loginButton = event.submitter; // Access the submit button
 
     try {
-        const response = await fetch('/user/login', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(loginData),
-        });
+        // Disable button and show loading state
+        loginButton.disabled = true;
+        loginButton.textContent = 'Logging in...';
 
-        const data = await response.json();
+        const response = await axios.post('/user/login', loginData);
 
-        if (response.ok) {
-            alert('Login successful!');
-            window.location.href = '/expense';
-        } else {
-            alert(`Login failed: ${data.message}`);
-        }
+        // Save token to localStorage
+        localStorage.setItem('token', response.data.token);
+
+        alert('Login successful!');
+        loginForm.reset(); // Reset the form fields
+        window.location.href = '/expense'; // Redirect to the expense page
     } catch (error) {
         console.error('Error:', error);
-        alert('An error occurred. Please try again.');
+
+        if (error.response && error.response.data && error.response.data.message) {
+            alert(`Login failed: ${error.response.data.message}`);
+        } else {
+            alert('An error occurred. Please try again.');
+        }
+    } finally {
+        // Re-enable button and reset loading state
+        loginButton.disabled = false;
+        loginButton.textContent = 'Login';
     }
 });
 

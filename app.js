@@ -7,7 +7,6 @@ const expenseRoutes = require('./routes/expense');
 const User=require('./models/user');
 const Expense=require('./models/expense');
 
-
 const app = express();
 
 // Middleware
@@ -31,14 +30,13 @@ app.get('/expense', (req, res) => {
 // Use routes
 app.use('/user', userRoutes); // All user-related APIs
 app.use('/expense', expenseRoutes); // All expense-related APIs
-//association
-User.hasMany(Expense);
-Expense.belongsTo(User);
 
 // Error handling for undefined routes
 app.use((req, res) => {
     res.status(404).json({ error: 'Route not found' });
 });
+User.hasMany(Expense, { foreignKey: 'userId', onDelete: 'CASCADE' });
+Expense.belongsTo(User, { foreignKey: 'userId' });
 
 
 // Sync database and start server

@@ -15,25 +15,18 @@ signupForm.addEventListener('submit', async function (event) {
     const userData = { name, email, password };
 
     try {
-        const response = await fetch('/user/signup', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(userData),
-        });
+        const response = await axios.post('/user/signup', userData);
 
-        const data = await response.json();
-
-        if (response.ok) {
-            alert('Sign-up successful!');
-            signupForm.reset();
-            window.location.href = '/';
-        } else {
-            alert(`Sign-up failed: ${data.message}`);
-        }
+        alert('Sign-up successful!');
+        signupForm.reset();
+        window.location.href = '/';
     } catch (error) {
         console.error('Error:', error);
-        alert('An error occurred. Please try again.');
+
+        if (error.response && error.response.data && error.response.data.message) {
+            alert(`Sign-up failed: ${error.response.data.message}`);
+        } else {
+            alert('An error occurred. Please try again.');
+        }
     }
 });
