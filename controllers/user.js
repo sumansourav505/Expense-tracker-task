@@ -10,7 +10,7 @@ exports.generateAccessToken = (id, name) => {
     return jwt.sign(
         { userId: id, name: name }, 
         jwtSecret, 
-        { expiresIn: '1h' } // Add token expiration
+        { expiresIn: '7d' } // Add token expiration
     );
 };
 

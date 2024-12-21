@@ -60,4 +60,4 @@ sequelize
     })
     .catch((error) => {
         console.error('Error syncing database:', error);
-    });
+    });  
