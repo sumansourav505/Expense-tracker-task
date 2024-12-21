@@ -6,8 +6,18 @@ const userRoutes = require('./routes/user');
 const expenseRoutes = require('./routes/expense');
 const User=require('./models/user');
 const Expense=require('./models/expense');
+const cors = require('cors');
 
 const app = express();
+
+app.use(cors({
+  origin: 'http://localhost:3000', // Replace with your frontend's URL
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Authorization', 'Content-Type']
+}));
+
+
+
 
 // Middleware
 app.use(bodyParser.json()); // Parses JSON payloads

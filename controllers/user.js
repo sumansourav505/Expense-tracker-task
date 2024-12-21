@@ -3,7 +3,7 @@ const User = require('../models/user');
 const jwt = require('jsonwebtoken');
 
 const saltRounds = 10;
-const jwtSecret = 'secretekey'; // Use a strong secret in production
+const jwtSecret = 'secretkey';
 
 // Function to generate access token
 exports.generateAccessToken = (id, name) => {
