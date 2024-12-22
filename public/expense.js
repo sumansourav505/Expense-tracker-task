@@ -84,3 +84,37 @@ async function deleteExpense(id) {
         alert('Failed to delete expense.');
     }
 }
+//razorpay
+document.getElementById('premiumButton').onclick = async function (e) {
+    const token = localStorage.getItem('token');
+    try {
+        const response = await axios.get('/premium-membership', {
+            headers: { Authorization: `Bearer ${token}` },
+        });
+        console.log(response);
+        var options = {
+            key: response.data.key_id, // Enter the key ID from the backend
+            order_id: response.data.order.id, // Order ID from the backend
+            handler: async function (response) {
+                try {
+                    await axios.post(
+                        '/updateTransactionStatus',
+                        {
+                            order_id: options.order_id,
+                            payment_id: response.razorpay_payment_id,
+                        },
+                        { headers: { Authorization: `Bearer ${token}` } }
+                    );
+                    alert('You are a premium user now');
+                } catch (err) {
+                    console.error('Error updating transaction status:', err);
+                    alert('Transaction failed!');
+                }
+            },
+        };
+        const rzp = new Razorpay(options);
+        rzp.open();
+    } catch (error) {
+        console.error('Error initiating Razorpay:', error.message);
+    }
+};
