@@ -1,10 +1,11 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
+require('dotenv').config(); // Load environment variables
 const sequelize = require('./config/database');
 const userRoutes = require('./routes/user');
 const expenseRoutes = require('./routes/expense');
-const purchaseRoutes = require('./routes/purchase'); // Add the purchase route
+const purchaseRoutes = require('./routes/purchase');
 const User = require('./models/user');
 const Expense = require('./models/expense');
 const Order = require('./models/order');

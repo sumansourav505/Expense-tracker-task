@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', displayExpenses);
 document.getElementById('addExpense').addEventListener('click', addExpense);
+document.getElementById('premiumButton').addEventListener('click',razoPay);
 
 // Add a new expense
 async function addExpense() {
@@ -85,20 +86,23 @@ async function deleteExpense(id) {
     }
 }
 //razorpay
-document.getElementById('premiumButton').onclick = async function (e) {
+async function razoPay(e) {
     const token = localStorage.getItem('token');
     try {
-        const response = await axios.get('/premium-membership', {
+        const response = await axios.get('/purchase/premium-membership', {
             headers: { Authorization: `Bearer ${token}` },
         });
         console.log(response);
+        const { order, key_id } = response.data;
         var options = {
-            key: response.data.key_id, // Enter the key ID from the backend
-            order_id: response.data.order.id, // Order ID from the backend
+            key: key_id, // Enter the key ID from the backend
+            order_id: order.id, // Order ID from the backend
+
+            //send the payment details to backend for verification
             handler: async function (response) {
                 try {
                     await axios.post(
-                        '/updateTransactionStatus',
+                        '/purchase/updateTransactionStatus',
                         {
                             order_id: options.order_id,
                             payment_id: response.razorpay_payment_id,
