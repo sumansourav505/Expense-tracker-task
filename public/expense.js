@@ -89,7 +89,7 @@ async function deleteExpense(id) {
 async function razoPay(e) {
     const token = localStorage.getItem('token');
     try {
-        const response = await axios.get('/purchase/premium-membership', {
+        const response = await axios.post('/purchase/premium-membership', {
             headers: { Authorization: `Bearer ${token}` },
         });
         console.log(response);
@@ -122,3 +122,169 @@ async function razoPay(e) {
         console.error('Error initiating Razorpay:', error.message);
     }
 };
+// //updated
+// document.addEventListener('DOMContentLoaded', async () => {
+//     const token = localStorage.getItem('token');
+//     if (!token) {
+//         console.error('Authorization token not found');
+//         return;
+//     }
+
+//     try {
+//         // Check if the user is premium
+//         const response = await axios.get('/user/status', {
+//             headers: { Authorization: `Bearer ${token}` },
+//         });
+
+//         const isPremiumUser = response.data.isPremiumUser;
+//         if (isPremiumUser) {
+//             document.getElementById('premiumButton').style.display = 'none';
+//         }
+//     } catch (error) {
+//         console.error('Error checking user status:', error.message);
+//     }
+
+//     displayExpenses();
+// });
+
+// document.getElementById('addExpense').addEventListener('click', addExpense);
+// document.getElementById('premiumButton').addEventListener('click',cashfreePay );
+
+// // Add a new expense
+// async function addExpense() {
+//     const amount = document.getElementById('expenseAmount').value.trim();
+//     const description = document.getElementById('expenseDescription').value.trim();
+//     const category = document.getElementById('expenseCategory').value.trim();
+
+//     if (!amount || !description || !category) {
+//         alert("Please fill all fields!");
+//         return;
+//     }
+
+//     const expense = { amount, description, category };
+
+//     try {
+//         const token = localStorage.getItem('token');
+//         const response = await axios.post('/expense', expense, {
+//             headers: { Authorization: `Bearer ${token}` },
+//         });
+//         displayExpense(response.data);
+//         clearFields();
+//     } catch (error) {
+//         console.error('Error adding expense:', error.message);
+//         alert('Failed to add expense.');
+//     }
+// }
+
+// // Fetch and display all expenses
+// function displayExpenses() {
+//     const token = localStorage.getItem('token');
+//     if (!token) {
+//         console.error('Authorization token not found');
+//         return;
+//     }
+
+//     axios
+//         .get(`/expense/user/`, { headers: { Authorization: `Bearer ${token}` } })
+//         .then((response) => {
+//             const expenses = response.data;
+//             const expenseList = document.getElementById('expenseList');
+//             expenseList.innerHTML = ''; // Clear the list
+//             expenses.forEach((expense) => displayExpense(expense));
+//         })
+//         .catch((error) => {
+//             console.error('Error fetching expenses:', error.message);
+//         });
+// }
+
+// // Display a single expense
+// function displayExpense(expense) {
+//     const expenseList = document.getElementById('expenseList');
+//     const expenseItem = document.createElement('div');
+//     expenseItem.className =
+//         'alert alert-secondary d-flex justify-content-between align-items-center';
+//     expenseItem.innerHTML = `
+//         <span>${expense.category}: ${expense.description} - ₹${expense.amount}</span>
+//         <div>
+//             <button class="btn btn-sm btn-danger" onclick="deleteExpense(${expense.id})">Delete</button>
+//         </div>
+//     `;
+//     expenseList.appendChild(expenseItem);
+// }
+
+// // Clear input fields
+// function clearFields() {
+//     document.getElementById('expenseAmount').value = '';
+//     document.getElementById('expenseDescription').value = '';
+//     document.getElementById('expenseCategory').value = '';
+// }
+
+// // Delete an expense
+// async function deleteExpense(id) {
+//     const token = localStorage.getItem('token');
+//     try {
+//         await axios.delete(`/expense/${id}`, {
+//             headers: { Authorization: `Bearer ${token}` },
+//         });
+//         alert('Expense deleted successfully!');
+//         displayExpenses();
+//     } catch (error) {
+//         console.error('Error deleting expense:', error.message);
+//         alert('Failed to delete expense.');
+//     }
+// }
+
+// // CashFree integration
+// async function cashfreePay() {
+//     const token = localStorage.getItem('token');
+
+//     try {
+//         // Step 1: Get order details and payment token from the backend
+//         const response = await axios.get('/purchase/premium-membership', {
+//             headers: { Authorization: `Bearer ${token}` },
+//         });
+
+//         const { order, paymentToken, appId } = response.data;
+
+//         // Ensure container exists for the Drop-in Widget
+//         const container = document.getElementById('cashfree-container');
+//         if (!container) {
+//             const div = document.createElement('div');
+//             div.id = 'cashfree-container';
+//             document.body.appendChild(div);
+//         }
+
+//         // Step 2: Configure Cashfree's Drop-in Widget
+//         const options = {
+//             paymentMode: 'card', // Options: 'upi', 'card', 'netbanking', etc.
+//             paymentToken: paymentToken,
+//             container: '#cashfree-container', // Payment UI container
+//             orderId: order.id,
+//             appId: appId, // Passed from the backend
+//             orderAmount: order.order_amount,
+//             customerName: order.customer_name, // Pass dynamically
+//             customerEmail: order.customer_email, // Pass dynamically
+//             customerPhone: order.customer_phone, // Pass dynamically
+//         };
+
+//         // Step 3: Open Payment UI
+//         Cashfree.makePayment(options, async (event) => {
+//             if (event.status === 'SUCCESS') {
+//                 // Payment success
+//                 await axios.post(
+//                     '/purchase/updateTransactionStatus',
+//                     { orderId: order.id, paymentStatus: 'SUCCESS' },
+//                     { headers: { Authorization: `Bearer ${token}` } }
+//                 );
+//                 alert('You are a premium user now');
+//                 document.getElementById('premiumButton').style.display = 'none';
+//             } else {
+//                 console.error('Payment failed:', event);
+//                 alert('Payment failed! Please try again.');
+//             }
+//         });
+//     } catch (error) {
+//         console.error('Error initiating Cashfree payment:', error.message);
+//         alert('Error initiating payment. Please try again.');
+//     }
+// }

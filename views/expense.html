@@ -41,9 +41,62 @@
 
 <!-- Premium Button -->
 <button id="premiumButton" class="btn btn-success">Buy Premium Membership⭐</button>
+
+<!-- Razorpay Payment Script -->
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
 <script src="/expense.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+<script>
+  // Handling Premium Membership Button Click
+  document.getElementById('premiumButton').addEventListener('click', function () {
+    axios.post('/premium-membership')
+      .then(function (response) {
+        const order = response.data.order;
+        const keyId = response.data.keyId;
+
+        // Configure Razorpay payment options
+        var options = {
+          key: keyId,  // Razorpay Key ID
+          amount: order.amount,  // Amount in paise
+          currency: order.currency,
+          name: "Expense Tracker",
+          description: "Premium Membership",
+          image: "https://example.com/logo.png",  // Your logo
+          order_id: order.id,
+          handler: function (response) {
+            // Payment success handler
+            axios.post('/updateTransactionStatus', {
+              order_id: order.id,
+              payment_id: response.razorpay_payment_id
+            })
+            .then(function (res) {
+              alert(res.data.message);
+            })
+            .catch(function (err) {
+              alert('Payment failed. Please try again.');
+            });
+          },
+          prefill: {
+            name: "User Name",  // You can fetch user name dynamically if required
+            email: "user@example.com",  // Similarly, fetch user email dynamically
+            contact: "9999999999"  // Fetch user contact dynamically
+          },
+          theme: {
+            color: "#F37254"
+          }
+        };
+
+        // Launch Razorpay Checkout
+        var rzp1 = new Razorpay(options);
+        rzp1.open();
+      })
+      .catch(function (error) {
+        alert('Something went wrong! Please try again later.');
+      });
+  });
+</script>
+
 </body>
 </html>
