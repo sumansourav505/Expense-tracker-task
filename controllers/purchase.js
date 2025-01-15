@@ -3,15 +3,16 @@ const Order = require('../models/order');
 
 const purchasePremium = async (req, res) => {
     try {
-        const keyId = 'rzp_test_AEhpQC3stcSTVw';  // Your Razorpay Key ID
-        const secretKey = 'jpxAl4mZd3s7gaNhseOUAB0R';  // Your Razorpay Secret Key
+        console.log("Premium");
+        const keyId = 'rzp_test_AEhpQC3stcSTVw';  //  Razorpay Key ID
+        const secretKey = 'jpxAl4mZd3s7gaNhseOUAB0R';  //  Razorpay Secret Key
         const amount = 2500; // Amount in INR
 
         // Check if there's already a pending order
-        const existingOrder = await req.user.getOrders({ where: { status: 'PENDING' } });
-        if (existingOrder.length > 0) {
-            return res.status(400).json({ message: 'A pending order already exists.' });
-        }
+        // const existingOrder = await req.user.getOrders({ where: { status: 'PENDING' } });
+        // if (existingOrder.length > 0) {
+        //     return res.status(400).json({ message: 'A pending order already exists.' });
+        // }
 
         // Prepare payload for Razorpay order creation
         const orderData = {
@@ -46,7 +47,9 @@ const purchasePremium = async (req, res) => {
                 keyId: keyId,  // Send Razorpay Key ID to frontend for payment UI
             });
         } else {
-            return res.status(400).json({ message: 'Failed to create order.' });
+            console.log("fail to create order");
+             res.status(400).json({ message: 'Failed to create order.' });
+
         }
     } catch (err) {
         console.error('Error in purchasePremium:', err.message);
@@ -86,6 +89,7 @@ const updateTransactionStatus = async (req, res) => {
             await order.save();
 
             // Update user to premium
+            const user=req.user;
             await req.user.update({ isPremiumUser: true });
 
             res.status(200).json({ message: 'Transaction status updated successfully' });

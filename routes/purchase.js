@@ -9,6 +9,10 @@ router.post(
     authenticateController.authenticate,
     purchaseController.purchasePremium
 );
+router.get('/user/status',
+    authenticateController.authenticate,
+    purchaseController.getUserStatus
+);
 router.post(
     '/updateTransactionStatus',
     authenticateController.authenticate,

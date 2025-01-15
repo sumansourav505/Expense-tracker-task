@@ -1,5 +1,7 @@
 const signupForm = document.getElementById('signupForm');
 
+const BASE_URL = 'http://localhost:3000'; // Define base URL
+
 signupForm.addEventListener('submit', async function (event) {
     event.preventDefault();
 
@@ -15,7 +17,7 @@ signupForm.addEventListener('submit', async function (event) {
     const userData = { name, email, password };
 
     try {
-        const response = await axios.post('/user/signup', userData);
+        const response = await axios.post(`${BASE_URL}/user/signup`, userData);
 
         alert('Sign-up successful!');
         signupForm.reset();

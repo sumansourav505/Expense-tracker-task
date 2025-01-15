@@ -1,6 +1,8 @@
 const loginForm = document.getElementById('loginForm');
 const signupButton = document.getElementById('signupButton');
 
+const BASE_URL = 'http://localhost:3000'; // Define base URL
+
 // Handle login submission
 loginForm.addEventListener('submit', async function (event) {
     event.preventDefault();
@@ -21,7 +23,7 @@ loginForm.addEventListener('submit', async function (event) {
         loginButton.disabled = true;
         loginButton.textContent = 'Logging in...';
 
-        const response = await axios.post('/user/login', loginData);
+        const response = await axios.post(`${BASE_URL}/user/login`, loginData);
 
         // Save token to localStorage
         localStorage.setItem('token', response.data.token);
