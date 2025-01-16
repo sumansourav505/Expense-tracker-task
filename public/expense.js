@@ -14,92 +14,6 @@ document.addEventListener('click', (event) => {
 
 const BASE_URL = 'http://localhost:3000'; // Define your base URL
 
-// Show leadership board
-async function showLeadershipBoard() {
-    const token = localStorage.getItem('token'); // Corrected getItem method
-    try {
-        const response = await axios.get(`${BASE_URL}/premium/show-leadership`, {
-            headers: { Authorization: `Bearer ${token}` },
-        });
-
-        // Handle response
-        const leadershipData = response.data;
-        const formattedData = leadershipData
-            .map((entry) => `Name: ${entry.name} - Total Expense: ₹${entry.totalExpense}`)
-            .join('\n');
-
-        alert(`Leadership Board:\n${formattedData}`);
-    } catch (error) {
-        console.error('Error fetching leadership data:', error.message);
-        alert('Failed to fetch leadership board.');
-    }
-}
-
-// Check if the user is a premium user and show/hide the premium button
-async function checkPremiumStatus() {
-    const premiumButton = document.getElementById('premiumButton');
-    let premiumContainer = document.getElementById('premiumMessageContainer');
-
-    // Dynamically create the container if it doesn't exist
-    if (!premiumContainer) {
-        premiumContainer = document.createElement('div');
-        premiumContainer.id = 'premiumMessageContainer';
-        document.body.appendChild(premiumContainer);
-    }
-
-    try {
-        const token = localStorage.getItem('token');
-        if (!token) {
-            console.error('Authorization token not found.');
-            return;
-        }
-
-        const response = await axios.get(`${BASE_URL}/user/status`, {
-            headers: { Authorization: `Bearer ${token}` },
-        });
-
-        if (response.data.isPremiumUser) {
-            premiumButton.style.display = 'none';
-
-            // Add Leadership button for premium users
-            if (!document.getElementById('leadershipButton')) {
-                const leadershipButton = document.createElement('button');
-                leadershipButton.id = 'leadershipButton';
-                leadershipButton.textContent = 'Leadership';
-                leadershipButton.classList.add('btn', 'btn-info');
-                leadershipButton.style.position = 'fixed';
-                leadershipButton.style.top = '20px';
-                leadershipButton.style.right = '120px';
-                leadershipButton.style.zIndex = '1000';
-                document.body.appendChild(leadershipButton);
-            }
-
-            let premiumMessage = document.querySelector('.premium-message');
-            if (!premiumMessage) {
-                premiumMessage = document.createElement('p');
-                premiumMessage.textContent = 'You are a premium user🤴';
-                premiumMessage.classList.add('premium-message');
-                premiumContainer.appendChild(premiumMessage);
-            }
-        } else {
-            premiumButton.style.display = 'block';
-
-            // Remove Leadership button if user is not premium
-            const leadershipButton = document.getElementById('leadershipButton');
-            if (leadershipButton) {
-                leadershipButton.remove();
-            }
-
-            const premiumMessage = document.querySelector('.premium-message');
-            if (premiumMessage) {
-                premiumMessage.remove();
-            }
-        }
-    } catch (error) {
-        console.error('Error fetching premium status:', error.message);
-        alert('Failed to fetch user status. Please refresh the page.');
-    }
-}
 
 // Add a new expense
 async function addExpense() {
@@ -108,7 +22,7 @@ async function addExpense() {
     const category = document.getElementById('expenseCategory').value.trim();
 
     if (!amount || !description || !category) {
-        alert('Please fill all fields!');
+        alert("Please fill all fields!");
         return;
     }
 
@@ -116,7 +30,7 @@ async function addExpense() {
 
     try {
         const token = localStorage.getItem('token');
-        const response = await axios.post(`${BASE_URL}/expense`, expense, {
+        const response = await axios.post('/expense', expense, {
             headers: { Authorization: `Bearer ${token}` },
         });
         displayExpense(response.data);
@@ -142,6 +56,11 @@ async function displayExpenses() {
         const expenses = response.data;
         const expenseList = document.getElementById('expenseList');
         expenseList.innerHTML = ''; // Clear the list
+        if (expenses.length === 0) {
+            const noExpensesMessage = document.createElement('p');
+            noExpensesMessage.textContent = 'No expenses found.';
+            expenseList.appendChild(noExpensesMessage);
+        }
         expenses.forEach((expense) => displayExpense(expense));
     } catch (error) {
         console.error('Error fetching expenses:', error.message);
@@ -155,26 +74,24 @@ function displayExpense(expense) {
     expenseItem.className =
         'alert alert-secondary d-flex justify-content-between align-items-center';
     expenseItem.innerHTML = `
-        <span>${expense.category}: ${expense.description} - ₹${expense.amount}</span>
+        <span>${expense.category}: ${expense.description} - ₹${parseFloat(expense.amount).toFixed(2)}</span>
         <div>
             <button class="btn btn-sm btn-danger" onclick="deleteExpense(${expense.id})">Delete</button>
         </div>
     `;
     expenseList.appendChild(expenseItem);
 }
-
-// Clear input fields
+//clear fields
 function clearFields() {
     document.getElementById('expenseAmount').value = '';
     document.getElementById('expenseDescription').value = '';
     document.getElementById('expenseCategory').value = '';
 }
-
-// Delete an expense
+//delete expenses
 async function deleteExpense(id) {
     const token = localStorage.getItem('token');
     try {
-        await axios.delete(`${BASE_URL}/expense/${id}`, {
+        await axios.delete(`/expense/${id}`, {
             headers: { Authorization: `Bearer ${token}` },
         });
         alert('Expense deleted successfully!');
@@ -184,10 +101,107 @@ async function deleteExpense(id) {
         alert('Failed to delete expense.');
     }
 }
+// Check if the user is a premium user and show/hide the premium button
+async function checkPremiumStatus() {
+    const premiumButton = document.getElementById('premiumButton');
+    let premiumContainer = document.getElementById('premiumMessageContainer');
+
+    if (!premiumContainer) {
+        premiumContainer = document.createElement('div');
+        premiumContainer.id = 'premiumMessageContainer';
+        document.body.appendChild(premiumContainer);
+    }
+
+    const token = localStorage.getItem('token');
+    if (!token) {
+        console.error('Authorization token not found.');
+        return;
+    }
+
+    try {
+        const response = await axios.get(`${BASE_URL}/user/status`, {
+            headers: { Authorization: `Bearer ${token}` },
+        });
+
+        if (response.data.isPremiumUser) {
+            premiumButton.style.display = 'none';
+            if (!document.getElementById('leadershipButton')) {
+                const leadershipButton = document.createElement('button');
+                leadershipButton.id = 'leadershipButton';
+                leadershipButton.textContent = 'Leadership';
+                leadershipButton.classList.add('btn', 'btn-info');
+                leadershipButton.style.position = 'fixed';
+                leadershipButton.style.top = '20px';
+                leadershipButton.style.right = '120px';
+                leadershipButton.style.zIndex = '1000';
+                document.body.appendChild(leadershipButton);
+            }
+
+            let premiumMessage = document.querySelector('.premium-message');
+            if (!premiumMessage) {
+                premiumMessage = document.createElement('p');
+                premiumMessage.textContent = 'You are a premium user🤴';
+                premiumMessage.classList.add('premium-message');
+                premiumContainer.appendChild(premiumMessage);
+            }
+        } else {
+            premiumButton.style.display = 'block';
+
+            const leadershipButton = document.getElementById('leadershipButton');
+            if (leadershipButton) {
+                leadershipButton.remove();
+            }
+
+            const premiumMessage = document.querySelector('.premium-message');
+            if (premiumMessage) {
+                premiumMessage.remove();
+            }
+        }
+    } catch (error) {
+        console.error('Error fetching premium status:', error.message);
+        alert('Failed to fetch user status. Please refresh the page.');
+    }
+}
+
+// Show leadership board
+async function showLeadershipBoard() {
+    const leadershipElement = document.getElementById('leadership');
+    leadershipElement.innerHTML = '<h1>Leaders Board</h1>'; // Clear existing content and set header
+
+    const token =localStorage.getItem('token');
+        if (!token) {
+            console.error('Authorization token not found');
+            alert('Please log in to view the leadership board.');
+            return;
+        }
+
+    try {
+        const response = await axios.get(`${BASE_URL}/premium/show-leadership`, {
+            headers: { Authorization: `Bearer ${token}` },
+        });
+
+        console.log(response.data);
+
+        response.data.forEach((userDetails) => {
+            const listItem = document.createElement('li');
+            listItem.textContent = `Name: ${userDetails.name}, Total Expense: ₹${userDetails.totalExpenses}`;
+            leadershipElement.appendChild(listItem);
+        });
+    } catch (error) {
+        console.error('Error fetching leadership data:', error.message);
+        alert('Failed to fetch leadership board.');
+    }
+}
 
 // Razorpay Integration for Premium Membership
 async function razoPay() {
     const token = localStorage.getItem('token');
+    if (!token) {
+        console.error('Authorization token not found');
+        alert('Please log in to proceed');
+        return;
+    }
+
     try {
         const response = await axios.post(`${BASE_URL}/purchase/premium-membership`, {}, {
             headers: { Authorization: `Bearer ${token}` },
@@ -195,7 +209,7 @@ async function razoPay() {
 
         const { order, keyId } = response.data;
         if (!order || !order.id || !keyId) {
-            throw new Error('Invalid response from server');
+            throw new Error('Invalid response from server during Razorpay integration.');
         }
 
         var options = {
@@ -212,7 +226,7 @@ async function razoPay() {
                         { headers: { Authorization: `Bearer ${token}` } }
                     );
                     alert('You are a premium user now');
-                    checkPremiumStatus(); // Recheck premium status to hide the button
+                    checkPremiumStatus();
                 } catch (err) {
                     console.error('Error updating transaction status:', err);
                     alert('Transaction failed!');
@@ -224,6 +238,6 @@ async function razoPay() {
         rzp.open();
     } catch (error) {
         console.error('Error initiating Razorpay:', error.message);
-        alert('Failed to initiate payment. Please try again later.');
+        alert('Failed to initiate payment.');
     }
 }

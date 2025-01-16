@@ -23,39 +23,58 @@
       border-radius: 5px;
       z-index: 1000;
     }
+    #leadership {
+      margin-top: 20px;
+      padding: 10px;
+      background-color: #f9f9f9;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    #leadership h1 {
+      font-size: 1.5rem;
+      margin-bottom: 10px;
+    }
+    #leadership li {
+      margin: 5px 0;
+    }
   </style>
 </head>
 <body>
   <div class="premiumMessageContainer" aria-live="polite"></div>
-<div class="container my-5">
-  <h2 class="text-center">Expense Tracker</h2>
-  <div class="card p-4">
-    <div class="form-group">
-      <input type="text" id="expenseAmount" class="form-control" placeholder="Expense Amount">
+  
+  <div class="container my-5">
+    <h2 class="text-center">Expense Tracker</h2>
+    <div class="card p-4">
+      <div class="form-group">
+        <input type="text" id="expenseAmount" class="form-control" placeholder="Expense Amount">
+      </div>
+      <div class="form-group">
+        <input type="text" id="expenseDescription" class="form-control" placeholder="Expense Description">
+      </div>
+      <div class="form-group">
+        <select id="expenseCategory" class="form-control">
+          <option value="">Select Category</option>
+          <option value="Food">Food</option>
+          <option value="Fuel">Fuel</option>
+          <option value="Shopping">Shopping</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+      <button id="addExpense" class="btn btn-primary btn-block">Add Expense</button>
     </div>
-    <div class="form-group">
-      <input type="text" id="expenseDescription" class="form-control" placeholder="Expense Description">
+    <div id="expenseList" class="mt-4"></div>
+    <!-- Leadership Board -->
+    <div id="leadership">
+      <!-- Leadership board content will be dynamically added here -->
     </div>
-    <div class="form-group">
-      <select id="expenseCategory" class="form-control">
-        <option value="">Select Category</option>
-        <option value="Food">Food</option>
-        <option value="Fuel">Fuel</option>
-        <option value="Shopping">Shopping</option>
-        <option value="Other">Other</option>
-      </select>
-    </div>
-    <button id="addExpense" class="btn btn-primary btn-block">Add Expense</button>
   </div>
-  <div id="expenseList" class="mt-4"></div>
-</div>
 
-<!-- Premium Button -->
-<button id="premiumButton" class="btn btn-success">Buy Premium Membership⭐</button>
+  <!-- Premium Button -->
+  <button id="premiumButton" class="btn btn-success">Buy Premium Membership⭐</button>
 
-<!-- Razorpay Payment Script -->
-<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-<script src="/expense.js"></script>
+  <!-- Razorpay Payment Script -->
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script src="/expense.js"></script>
 </body>
 </html>

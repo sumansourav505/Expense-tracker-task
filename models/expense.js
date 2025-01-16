@@ -19,24 +19,7 @@ const Expense = sequelize.define('expense', {
     type:Sequelize.STRING,
     allowNull:false
   },
-  // userId: {
-  //   type: Sequelize.INTEGER,
-  //   allowNull: false,
-  //   references: {
-  //     model: 'users',  // Foreign key to the Users table
-  //     key: 'id',
-  //   },
-  // },
-  // createdAt: {
-  //   type: Sequelize.DATE,
-  //   allowNull: false,
-  //   defaultValue: Sequelize.NOW,
-  // },
-  // updatedAt: {
-  //   type: Sequelize.DATE,
-  //   allowNull: false,
-  //   defaultValue: Sequelize.NOW,
-  // },
+  
 });
 
 module.exports = Expense;

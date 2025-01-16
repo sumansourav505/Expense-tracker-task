@@ -6,6 +6,7 @@ const sequelize = require('./config/database');
 const userRoutes = require('./routes/user');
 const expenseRoutes = require('./routes/expense');
 const purchaseRoutes = require('./routes/purchase');
+const premiumRoutes=require('./routes/premium');
 const User = require('./models/user');
 const Expense = require('./models/expense');
 const Order = require('./models/order');
@@ -26,6 +27,7 @@ app.get('/expense', (req, res) => res.sendFile(path.join(__dirname, 'views', 'ex
 app.use('/user', userRoutes);
 app.use('/expense', expenseRoutes);
 app.use('/purchase', purchaseRoutes);
+app.use('/premium',premiumRoutes);
 
 // Error handling for undefined routes
 app.use((req, res) => {
@@ -41,7 +43,7 @@ Order.belongsTo(User);
 
 // Sync database and start server
 sequelize
-    .sync()
+    .sync({force:true})
     .then(() => {
         console.log('Database synced successfully.');
         app.listen(3000, () => console.log('Server running at http://localhost:3000'));

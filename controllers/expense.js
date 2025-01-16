@@ -1,4 +1,5 @@
 const Expense = require('../models/expense');
+const User = require('../models/user');
 
 // Get all expenses for a user
 exports.getExpensesByUser = async (req, res) => {
@@ -26,6 +27,13 @@ exports.addExpense = async (req, res) => {
             category,
             userId: req.user.id,
         });
+        //update total expense for user
+        const updatedTotal = Number(req.user.totalExpenses || 0) + Number(amount);
+        req.user.totalExpenses=updatedTotal;
+        await User.update(
+            { totalExpenses: updatedTotal },
+            { where: { id: req.user.id } }
+        );
         res.status(201).json(newExpense);
     } catch (error) {
         console.error('Error adding expense:', error);
@@ -43,7 +51,13 @@ exports.deleteExpense = async (req, res) => {
         if (!expense) {
             return res.status(404).json({ message: 'Expense not found or not authorized.' });
         }
-
+        //deduct expense amount from total expense
+        const updatedTotal = Number(req.user.totalExpenses || 0) - Number(expense.amount);
+        req.user.totalExpenses=updatedTotal;
+        await User.update(
+            { totalExpenses: updatedTotal },
+            { where: { id: req.user.id } }
+        );
         await expense.destroy();
         res.status(200).json({ message: 'Expense deleted successfully.' });
     } catch (error) {

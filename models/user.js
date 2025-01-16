@@ -21,6 +21,10 @@ const User = sequelize.define('User', {
         defaultValue: false, // Default value is false
         allowNull: false,
     },
+    totalExpenses:{
+        type:Sequelize.INTEGER,
+        default:0,
+    }
     
 });
 
