@@ -43,7 +43,7 @@ Order.belongsTo(User);
 
 // Sync database and start server
 sequelize
-    .sync({force:true})
+    .sync({})
     .then(() => {
         console.log('Database synced successfully.');
         app.listen(3000, () => console.log('Server running at http://localhost:3000'));

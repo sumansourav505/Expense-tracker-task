@@ -166,7 +166,7 @@ async function checkPremiumStatus() {
 // Show leadership board
 async function showLeadershipBoard() {
     const leadershipElement = document.getElementById('leadership');
-    leadershipElement.innerHTML = '<h1>Leaders Board</h1>'; // Clear existing content and set header
+    leadershipElement.innerHTML = '<h1 class="text-center">Leaders Board</h1>'; // Clear existing content and set header
 
     const token =localStorage.getItem('token');
         if (!token) {
@@ -184,7 +184,8 @@ async function showLeadershipBoard() {
 
         response.data.forEach((userDetails) => {
             const listItem = document.createElement('li');
-            listItem.textContent = `Name: ${userDetails.name}, Total Expense: ₹${userDetails.totalExpenses}`;
+            listItem.className='alert alert-secondary d-flex justify-content-between align-items-center';
+            listItem.textContent = `Name:-${userDetails.name}-Total Expense:-₹${userDetails.totalExpenses}`;
             leadershipElement.appendChild(listItem);
         });
     } catch (error) {

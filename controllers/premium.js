@@ -1,6 +1,5 @@
-const { User} = require('../models/user');
-const {Expense}=require('../models/expense')
-const {Sequelize}=require('../config/database');
+const  User = require('../models/user');
+
 
 // Controller function for '/premium/show-leadership'
 const showLeadership = async (req, res) => {
