@@ -1,6 +1,7 @@
 const loginForm = document.getElementById('loginForm');
 const signupButton = document.getElementById('signupButton');
-
+const forgotPasswordButton = document.getElementById('forgotPasswordButton');
+const forgotPasswordForm = document.getElementById('forgotPasswordForm');
 const BASE_URL = 'http://localhost:3000'; // Define base URL
 
 // Handle login submission
@@ -16,31 +17,22 @@ loginForm.addEventListener('submit', async function (event) {
     }
 
     const loginData = { email, password };
-    const loginButton = event.submitter; // Access the submit button
+    const loginButton = event.submitter;
 
     try {
-        // Disable button and show loading state
         loginButton.disabled = true;
         loginButton.textContent = 'Logging in...';
 
         const response = await axios.post(`${BASE_URL}/user/login`, loginData);
-
-        // Save token to localStorage
         localStorage.setItem('token', response.data.token);
 
         alert('Login successful!');
-        loginForm.reset(); // Reset the form fields
-        window.location.href = '/expense'; // Redirect to the expense page
+        loginForm.reset();
+        window.location.href = '/expense';
     } catch (error) {
         console.error('Error:', error);
-
-        if (error.response && error.response.data && error.response.data.message) {
-            alert(`Login failed: ${error.response.data.message}`);
-        } else {
-            alert('An error occurred. Please try again.');
-        }
+        alert(error.response?.data?.message || 'An error occurred. Please try again.');
     } finally {
-        // Re-enable button and reset loading state
         loginButton.disabled = false;
         loginButton.textContent = 'Login';
     }
@@ -49,4 +41,30 @@ loginForm.addEventListener('submit', async function (event) {
 // Redirect to signup page
 signupButton.addEventListener('click', () => {
     window.location.href = '/signup';
+});
+
+// Show forgot password form
+forgotPasswordButton.addEventListener('click', () => {
+    forgotPasswordForm.style.display = 'block';
+});
+
+// Handle forgot password submission
+forgotPasswordForm.addEventListener('submit', async function (event) {
+    event.preventDefault();
+
+    const email = document.getElementById('forgotEmail').value.trim();
+    if (!email) {
+        alert('Please enter your email.');
+        return;
+    }
+
+    try {
+        const response = await axios.post(`${BASE_URL}/password/forgotpassword`, { email });
+        alert(response.data.message || 'If the email is registered, you will receive password reset instructions.');
+        forgotPasswordForm.reset();
+        forgotPasswordForm.style.display = 'none';
+    } catch (error) {
+        console.error('Error:', error);
+        alert(error.response?.data?.message || 'An error occurred. Please try again.');
+    }
 });
