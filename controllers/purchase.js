@@ -4,8 +4,8 @@ const Order = require('../models/order');
 const purchasePremium = async (req, res) => {
     try {
         console.log("Premium");
-        const keyId = 'rzp_test_AEhpQC3stcSTVw';  //  Razorpay Key ID
-        const secretKey = 'jpxAl4mZd3s7gaNhseOUAB0R';  //  Razorpay Secret Key
+        const keyId = process.env.RAZORPAY_KEY_ID;  //  Razorpay Key ID
+        const secretKey = process.env.RAZORPAY_KEY_SECRET;  //  Razorpay Secret Key
         const amount = 2500; // Amount in INR
 
         // Check if there's already a pending order
